@@ -1,100 +1,30 @@
 %
-% exemplo genérico de uso da classe iiufrgs.cls
-% $Id: iiufrgs.tex,v 1.1.1.1 2005/01/18 23:54:42 avila Exp $
-%
 % This is an example file and is hereby explicitly put in the
 % public domain.
 %
 \documentclass[ecp,tc,english]{iiufrgs}
-% Para usar o modelo, deve-se informar o programa e o tipo de documento.
-% Programas :
-%   * cic       -- Graduação em Ciência da Computação
-%   * ecp       -- Graduação em Ciência da Computação
-%   * ppgc      -- Programa de Pós Graduação em Computação
-%   * pgmigro   -- Programa de Pós Graduação em Microeletrônica
-%   
-% Tipos de Documento:
-%   * tc                -- Trabalhos de Conclusão (apenas cic e ecp)
-%   * diss ou mestrado  -- Dissertações de Mestrado (ppgc e pgmicro)
-%   * tese ou doutorado -- Teses de Doutorado (ppgc e pgmicro)
-%   * ti                -- Trabalho Individual (ppgc e pgmicro)
-% 
-% Outras Opções:
-%   * english    -- para textos em inglês
-%   * openright  -- Força início de capítulos em páginas ímpares (padrão da
-%                   biblioteca)
-%   * oneside    -- Desliga frente-e-verso
-%   * nominatalocal -- Lê os dados da nominata do arquivo nominatalocal.def
 
 
 % Use unicode
-\usepackage[utf8]{inputenc}   % pacote para acentuação
+% pacote para acentuação
+\usepackage[utf8]{inputenc}   
 
 % Necessário para incluir figuras
-\usepackage{graphicx}           % pacote para importar figuras
+\usepackage{graphicx}
+% pacote para usar fonte Adobe Times
+\usepackage{times}              
+% pacote para usar citações abnt
+\usepackage[alf,abnt-emphasize=bf]{abntex2cite}	
 
-\usepackage{times}              % pacote para usar fonte Adobe Times
-% \usepackage{palatino}
-% \usepackage{mathptmx}          % p/ usar fonte Adobe Times nas fórmulas
-
-\usepackage[alf,abnt-emphasize=bf]{abntex2cite}	% pacote para usar citações abnt
-
-%
-% Informações gerais
-%
+% Folha de capa
 \title{Memory-resistor based computing}
-
 \author{Hertzog}{Alexandre}
-% alguns documentos podem ter varios autores:
-%\author{Flaumann}{Frida Gutenberg}
-%\author{Flaumann}{Klaus Gutenberg}
-
-% orientador e co-orientador são opcionais (não diga isso pra eles :))
 \advisor[Prof.~Dr.]{Bringmann}{Oliver}
-%\coadvisor[Prof.~Dr.]{Knuth}{Donald Ervin}
 
-% a data deve ser a da defesa; se nao especificada, são gerados
-% mes e ano correntes
-%\date{maio}{2001}
-
-% o local de realização do trabalho pode ser especificado (ex. para TCs)
-% com o comando \location:
+% a data deve ser a da defesa
+\date{December}{2015}
 \location{Tuebingen}{Germany}
-
-% itens individuais da nominata podem ser redefinidos com os comandos
-% abaixo:
-% \renewcommand{\nominataReit}{Prof\textsuperscript{a}.~Wrana Maria Panizzi}
-% \renewcommand{\nominataReitname}{Reitora}
-% \renewcommand{\nominataPRE}{Prof.~Jos{\'e} Carlos Ferraz Hennemann}
-% \renewcommand{\nominataPREname}{Pr{\'o}-Reitor de Ensino}
-% \renewcommand{\nominataPRAPG}{Prof\textsuperscript{a}.~Joc{\'e}lia Grazia}
-% \renewcommand{\nominataPRAPGname}{Pr{\'o}-Reitora Adjunta de P{\'o}s-Gradua{\c{c}}{\~a}o}
-% \renewcommand{\nominataDir}{Prof.~Philippe Olivier Alexandre Navaux}
-% \renewcommand{\nominataDirname}{Diretor do Instituto de Inform{\'a}tica}
-% \renewcommand{\nominataCoord}{Prof.~Carlos Alberto Heuser}
-% \renewcommand{\nominataCoordname}{Coordenador do PPGC}
-% \renewcommand{\nominataBibchefe}{Beatriz Regina Bastos Haro}
-% \renewcommand{\nominataBibchefename}{Bibliotec{\'a}ria-chefe do Instituto de Inform{\'a}tica}
-% \renewcommand{\nominataChefeINA}{Prof.~Jos{\'e} Valdeni de Lima}
-% \renewcommand{\nominataChefeINAname}{Chefe do \deptINA}
-% \renewcommand{\nominataChefeINT}{Prof.~Leila Ribeiro}
-% \renewcommand{\nominataChefeINTname}{Chefe do \deptINT}
-
-% A seguir são apresentados comandos específicos para alguns
-% tipos de documentos.
-
-% Relatório de Pesquisa [rp]:
-% \rp{123}             % numero do rp
-% \financ{CNPq, CAPES} % orgaos financiadores
-
-% Trabalho Individual [ti]:
-% \ti{123}     % numero do TI
-% \ti[II]{456} % no caso de ser o segundo TI
-
-% Monografias de Especialização [espec]:
-% \espec{Redes e Sistemas Distribuídos}      % nome do curso
-% \coord[Profa.~Dra.]{Weber}{Taisy da Silva} % coordenador do curso
-% \dept{INA}                                 % departamento relacionado
+% Fim da folha de capa
 
 %
 % palavras-chave
@@ -140,7 +70,6 @@ Thanks to my family: Anelise H., Augusto H., Eleonor H., João B. H., Marlon M. 
 
 And finally, thanks to my dearly loved girlfriend: Mayã O. M. for showing me that I can be a better person by knowing myself.
 
-
 % resumo na língua do documento
 \begin{abstract}
 This document is about the theoretical use of memory-resistor elements to perform math operations, posing itself as a basic non-Von Neumann Architecture for a simple processor that is able to dispatch instructions to these elements. This thesis also presents some ideas for the optimization of these operations by making use of simple schedule optimizations.
@@ -160,12 +89,6 @@ Esse documento diz respeito ao uso teórico de elementos resistores de memória 
 	\item[HD] Hard Disk
 	\item[SSD] Solid State Disk
 \end{listofabbrv}
-
-% idem para a lista de símbolos
-%\begin{listofsymbols}{$\alpha\beta\pi\omega$}
-%       \item[$\sum{\frac{a}{b}}$] Somatório do produtório
-%       \item[$\alpha\beta\pi\omega$] Fator de inconstância do resultado
-%\end{listofsymbols}
 
 % lista de figuras
 \listoffigures

@@ -1,0 +1,224 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+%\usepackage{subfigure}
+
+\usepackage[table,xcdraw]{xcolor}
+
+\usepackage[utf8]{inputenc}  
+%\usepackage[brazilian]{babel} 
+%\usepackage[latin1]{inputenc} 
+
+\usepackage{indentfirst} 
+
+     
+\sloppy
+
+\title{STC: Smart Tourist Camera}
+
+\author{Juliano Morato Franz\inst{1}}
+
+
+\address{Instituto de Inform\'{a}tica -- Universidade Federal do Rio Grande do Sul
+  (UFRGS)\\
+  Caixa Postal 15.064 -- 91.501-970 -- Porto Alegre -- RS -- Brazil
+  \email{jmfranz@inf.ufrgs.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+When people travel, they often encounter problems and difficulties along the way. One very common issue is to take a photograph on a touristic spot with the help of  a stranger. Most of the results of this short collaboration are not as previously imagined.  In this paper, it is introduced a new camera application that aims to help tourists during travels. The proposed system consists of an application capable of aiding a third-party to photograph the camera owner. It does so by guiding the photographer position the camera in the right place that was once imagined by the owner. The application current target are Android devices, and it relies on the phone IMU and computer vision algorithms.
+\end{abstract}
+     
+\begin{resumo} 
+Quando as pessoas viajam, elas muitas vezes encontram algumas dificuldades ao longo do caminho. Um problema muito comum é o de fazer fotografias, com a ajuda de um estranho, em um ponto turístico . A maioria dos resultados desta curta colaboração não são como o esperado. Neste aritgo, indroduzimos um novo aplicativo de câmera fotográfica que tem como objetivo ajudar turistas durante as suas viagens. O sistema proposto consiste em uma aplicação capaz de ajudar um terceiro a fotografar o proprietário da câmera em pouco tempo. O aplicativo opera orientando o fotógrafo a posicionar a câmera no lugar certo que, anteriormente, fora definido pelo proprietário. A aplicação será desenvolvida para dispositivos Android e se baseará em algoritmos de medição inercial e de visão computacional.
+ \end{resumo}
+
+
+\section{Introduction}
+
+It is not unusual the need of assistance from strangers during travels. People often ask for strangers to shoot a picture of them in touristic spots and restaurants. The main issue with that task is that they do not have any knowledge of how capable that person is. Most of the pictures that taken this way are often inadequate or barely acceptable according to someone standards (\textit{eg. out of focus, thumb in front of the lens, badly composed... }).
+
+The main issue with travel photography is photo composition. The expansion of digital cameras has enabled the fast popularization of photography. However, in the selfie era, most people are not interested in the theory behind photography, and this leads to poorly composed photos. Figure \ref{fig:compTechniques} shows two examples of photo composition techniques that should serve as a starting point for every photo taken, the rule of thirds and the golden spiral. Figure \ref{fig:compExamples} shows two pictures taken with two different composition ideas. On the other side, following the rules all the time can lead to bad photos as well. The rules should serve as a base guide only.
+
+There are several reasons why bad photographs exists. Most people are in a hurry and when someone asks them for this favor he or she often try to do it as quickly as possible. Another class of strangers is the ones that have time, but do not know how to frame a photo correctly. Rare are the ones that know what they are doing, but that does not mean that the result will be satisfying because people just think different. Even the lucky ones that find someone that has time and skill to helps them, might not be able to explain what he or she wants because of language barriers.
+
+In this paper, it is introduced a novel application that aims to minimize human error when shooting photographs for someone. A camera application for Android that relies on computer vision algorithms and the current orientation of the cell phone, baptized as Smart Tourist Camera (STC) will be engineered. Smart because it does not rely on the knowledge of the John Doe that is using it. The software assumes the whoever is operating the camera barely has any photographic experience, but have sufficient intimacy with modern cellphones and is capable of following simple on-screen information.
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=.8\textwidth]{figs/compTech.jpg}
+  \caption{Two basic composition techniques the Golden Spiral and the Rule of Thirds that are often used as a starting point for composition}
+  \label{fig:compTechniques}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=.8\textwidth]{figs/comp.jpg}
+  \caption{Composition examples}
+  \label{fig:compExamples}
+\end{figure}
+
+
+\section{Related work}
+This kind of application is new in the literature however mainly because digital cameras are closed platforms, thus making it hard do develop and test new applications on the field. This problem was broadly discussed by \cite{Levoy10} where he talks about the current industry situation and, also, shows some successful prototypes that can be used as an alternative to off the shelf cameras. \cite{Adams:2010:FEP:1833349.1778766} developed Frankencamera that shows up as a more robust hardware and software solution for computational photography development.
+
+Some of the techniques that are going to be used here are not new and have also been used in retro-photography algorithms in the past. \cite{Bae:2010:CR:1805964.1805968} proposed a solution to recreate photographs from the past using image processing. His approach, however, needed a time costly calibration phase and also needed the use of a computer attached to the camera to handle the image processing. That whole process limits the user freedom and requires more time to recreate the photograph. 
+
+Feature detectors and extractors are used since the beginning of computer vision. Detectors are often categorized in a few different types such as edge, corner and blob. Once the detected subset is created it is possible to try to extract information of them with a feature description algorithm.
+
+Lowe \cite{Lowe:99} introduced SIFT, an algorithm to detect and describe local features in images. SIFT was largely used mainly because it has the capability of finding keypoints that are invariant to location, scale and rotation. \cite{Mikolajczyk:05} tested SIFT against other methods of descriptors including the author's method and SIFT outperformed most of the algorithms tested.
+
+Another common feature descriptor is the Speeded Up Robust Features (SURF) \cite{Bay:08}, which is partially based on SIFT. SURF is several times faster and more accurate then SIFT because it uses a type of blob detector as basis.
+
+However, both SIFT and SURF are not intended for use in mobile applications because of their computational requirement as described by \cite{Rublee:11} and \cite{Yang:12}. Another issue is that they are both  protected by patents.
+
+In this paper, the proposed application make use of another feature extractor: Oriented FAST and Rotated BRIEF (ORB) introduced by Rublee \cite{Rublee:11} as an alternative for both SIFT and SURF: ORB is a great alternative to SIFT and SURF in computation cost, matching performance and mainly because it is free of nasty patents. ORB also is more friendly on mobile devices, thus using less energy and saving battery life.
+
+Inertial measurement units (IMU) today are tiny and almost every wearable electronic or mobile device such as cellphones and cameras have it installed. They often have 6 degrees of freedom (DOF), but today most of the devices are designed with 9DOF units. Those units usually have a 3-axis accelerometer, a 3-axis gyroscope and a 3-axis magnetometer. In \cite{Woodman:07} goes through the different types of devices and talks about how they can act together to track movements.
+
+This combined act is known as sensor fusion and is widely used in mobile devices. Sensor fusion is mostly used to track head movements in modern head-mounted displays ->> CITATION NEEDED <<- and in some cases is used to help estimate camera position in the real world ->> CITATION NEEDED <<-.
+
+\section{The STC proposal}
+Here it is introduced the Smart Tourist Camera (STC) a camera application that has the propose of aiding tourists with photos abroad. STC aims to solve the problem that occurs when someone needs the assistance of a third party to take photographs for them. This situation is very common when the tourist wants to be a part of the photograph.
+
+STC consists of an application that can be deployed on any phone or even embedded in modern compact cameras. The minimum requirement is that they must have an IMU with at least 6 DOF and a processor capable of running computer vision algorithms. In the scope of this work, STC is intended to run on current high-end Android devices.
+
+STC works by using a reference photo and frame of reference that was set by the camera owner. Once the owner sets the reference frame, the phone can be delivered to anyone in the crowd and all this person has to do is follow the on-screen instructions. By doing this, the concept of a disposable camera, that was pretty common in the film days, is brought back, because the person that is operating will use it only once.
+
+
+The application works as follows: first the tourist goes to where he wants the camera to be and take a reference photograph from the scene. Then, he delivers the camera to the third-party, here called as a user. The user then points the camera close to the scene and follows the on-screen instructions. Once the camera detects that it is close enough of the reference photo it automatically takes the photograph.
+
+Figure \ref{fig:schematic} illustrates the overview of the application environment.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=1.1\textwidth]{figs/workflow.png}
+\caption{STC overview}
+\label{fig:schematic}
+\end{figure}
+
+
+\subsection{Pose estimation}
+In order to achieve the desired result, it is necessary to know where the camera is pointing at and compare it to where it should be. Therefore, there is a need to create a link between the camera's inertial measure units (IMU) and its current view of the real world. This technique has already been used in several applications involving mobile devices and virtual reality environment such as \cite{Hol:06}.
+
+The bound between camera and the IMU is done in two different steps to ease on the user interaction. First the user will be guided to correct the rotation of the camera by checking the IMU data and comparing it against the reference frame. Once the proper orientation is achieved, the user is then guided to fix the camera translation. The camera calculates the necessary translation transformation comparing the actual camera view and the one from the reference photograph.
+
+\subsubsection{3 degrees of freedom rotation}
+The first step on reconstruction of the reference photo is to correct the camera rotation. That is changing the camera's roll, pitch and yaw (Figure \ref{fig:rotationAxes}) to set it according to the reference model. At every frame, the camera can get a quaternion that represents the camera orientation. With that, it will render an image of the camera state on the screen. All the user have to do is to align that representation with a ghost camera that shows where the camera needs to be. 
+
+With a sensor fusion technique, that uses all of the available IMU sensors (accelerometer, gyroscope and magnetometer), is possible to obtain the quaternion data for every frame. Quaternion are preferred over Euler angles because they are faster to compute and do not suffer from ambiguities and gimbal locks.
+
+Is it possible to obtain sensor fusion between IMU sensors by several techniques, where Extended Kalman Filters are the ones with the most affinity by developers, but are not in the scope of this work. The Android API creates the sensor fusion for STC and grant that the application will sue the best configuration across multiple devices.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\textwidth]{figs/rotation.png}
+\caption{Device's rotation axes}
+\label{fig:rotationAxes}    
+\end{figure}
+
+\subsubsection{3 degrees of freedom translation}
+Once the rotation axes are correct, the application can guide the user to fix the translation axis as seen in figure \ref{fig:translationAxes}. To calculate the amount of correction necessary for the translation axes the camera will, at every frame, extract keypoints from the image (Figure \ref{fig:keypoints}) and match them upon the reference photo ones. Figure \ref{fig:matched} shows the matched keypoints on the current frame with the UI removed.
+
+The keypoints extraction will be implemented using the ORB \cite{Rublee:11} feature extractor and will be described with the same algorithm. The camera will then match them (the ones from the reference photo and the ones from the actual frame) using brute force matcher and calculate the hamming distance. 
+
+With the matching information, the application can create a distance vector from where the camera is in the real world to where it should be. That information can then be rendered to the user as a ghost phone (Figure \ref{fig:UI}) that needs to be centered in the screen. That is the last step where the user needs to interact with the camera. Once it is in the right position, the camera will automatically capture the photograph.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\textwidth]{figs/translation.png}
+\caption{Device's translation axes}
+\label{fig:translationAxes}    
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{figs/outsideKeypoints.jpg}
+\caption{Example of detected keypoints}
+\label{fig:keypoints}    
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{figs/matchedKeypoints.png}
+\caption{Example of matched keypoints}
+\label{fig:matched}
+\end{figure}
+
+\subsection{Interface Design}
+The application has some similarities to the disposable cameras of the film days. That is so because once the third-party takes the photo he or she will probably not use it again. From his point of view, the camera is a use only once device. Because of that, the application interface has a tremendous weight on the overall system especially because there is no training phase for the user.
+
+The user interface will be designed with the goal of being as simple as possible. It has no buttons, and there are only two kinds of instructions for the user: rotate and translate. The interface also tries to minimize external distraction by fading the current camera image. That is expected to work because the user opinion about the final result is not to be taken into consideration.
+
+
+Figure \ref{fig:UI} shows how the UI is rendered for the user.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.7\textwidth]{figs/UI-Trans.png}
+\caption{User Interface}
+\label{fig:UI}
+\end{figure}
+
+\subsection{Shake avoidance}
+Sometimes the image produced by cameras, especially in low light situations, suffer from blur resultant from camera shake. This problem can also affect our algorithm because the photographer is always moving the camera towards the correct placement. In order to reduce or avoid camera blur, once the camera is in the correct position we can take a burst of photographs instead of a single one.  
+
+\subsubsection{Advanced blur correction}
+The intent to use the burst of images is only as an attempt to avoid image blur. However, blur can still occur because the user is continuously moving the camera. In future work, it would be more interesting to add a post-processing stage that tries to diminish or remove image blur. Because STC already has the IMU data at the time of the photograph, it could save this information and use it in the deblurring stage as used by \cite{Joshi:06}.
+
+
+\section{User tests}
+The user tests are yet to be designed, however, because of the simplicity of the application they need to be as simple as possible. That is; there is a need to keep the concept of a disposable camera and keep the number tries to a minimum, only one is best. The main problem with such a simple interaction is that in order to have some significant data from the tests we need a large participant list.
+
+Beside from the interaction with the camera, the participants will also be asked to answer a questionnaire before and after the test. The first one is to assess the participant intimacy with photo cameras and his knowledge with image composition. The later is to qualitatively evaluate the application easy of use according to the participant. 
+
+Aside from the information gathered from the participant it is also possible to evaluate how precise the captured image is from the reference one. This metric will be used to verify if the application is capable of delivering good results. That will be done initially by eye review, but it could be also used computer vision algorithms comparing the similarity between the reference and final images.
+
+\section{Schedule}
+We currently have a prototype version of the camera working on a Nexus 5 phone. The computer vision and the IMU fusion algorithms are already drafted, and they need just minor adjustments. The current user interface needs to be proofed in order to proceed with the user tests.
+
+The overview of activities that still needs to be done are as follows and their schedule throughout the year is represented by the table \ref{scheduleTable}.
+\begin{enumerate}
+  \item Application development.
+    \item Minor bug fixes that may cause crashes.
+    \item Proofing of the actual user interface and changes on it if needed.
+    \item User tests
+    \item Data analysis
+    \item Write the final text
+\end{enumerate}
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]
+\centering
+\label{scheduleTable}
+\begin{tabular}{|c|l|c|c|c|c|c|c|c|c|c|l|}
+\hline
+\multicolumn{2}{|c|}{Activities} & \multicolumn{2}{c|}{August} & \multicolumn{2}{c|}{September} & \multicolumn{2}{c|}{October} & \multicolumn{2}{c|}{November} & \multicolumn{2}{c|}{December} \\ \hline
+\rowcolor[HTML]{9B9B9B} 
+\multicolumn{2}{|c|}{\cellcolor[HTML]{9B9B9B}1} & X & X &  &  &  &  &  &  &  &  \\ \hline
+\multicolumn{2}{|c|}{2} &  & X & X &  &  &  &  &  &  &  \\ \hline
+\rowcolor[HTML]{9B9B9B} 
+\multicolumn{2}{|c|}{\cellcolor[HTML]{9B9B9B}3} &  &  &  & X &  &  &  &  &  &  \\ \hline
+\multicolumn{2}{|c|}{4} &  &  &  &  & X & X &  &  &  &  \\ \hline
+\rowcolor[HTML]{9B9B9B} 
+\multicolumn{2}{|c|}{\cellcolor[HTML]{9B9B9B}5} &  &  &  &  &  & X & X & X &  &  \\ \hline
+\multicolumn{2}{|c|}{6} &  &  &  &  &  & X & X & X & X & \multicolumn{1}{c|}{} \\ \hline
+\end{tabular}
+\end{table}
+
+\bibliographystyle{sbc}
+\bibliography{JulianoFranzTG1}
+
+\end{document}
+
+
