@@ -143,31 +143,52 @@ Basic operations for memories are read and write. It is not different when it co
 
 To write to a memristor, the base must be informed. With that base, the input voltage is defined in function of the desired value, following the formula:
 
-[TODO] formula da voltagem
-Figure 1. Formula to resolve the input voltage of a memristor.
+\begin{equation}
+  voltage = \frac{value}{base} + basevoltage
+\end{equation}
 
 Due to electrical characteristics of the memristor, voltages below 3V are absorbed by the memristors energy dissipation while in high-resistance mode. Therefore, it is necessary to introduce a “basevoltage” constant that makes sure that the desired value is correctly represented when it is inputted to the memristor.
 
-[TODO] figura que mostra a relação entre voltagem e quantidade de pulsos
-Figura 2. Base versus voltage of input pulses.
+\begin{figure}
+  \caption{Base versus voltage of input pulses.}
+  \centerline{\includegraphics{fig/memristor-basexvoltage.png}}
+  \legend{Source: [TODO]}
+  \label{fig:mr_bxv}
+\end{figure}
 
-After base times value [TODO] pulses to a memristor, it will chatge and change to the low-resistance state. It is necessary to reset the memristor when it is on this state, since anything inputted to it in this state will be lost. To avoid the need to reset the memristor everytime it switches, there is a feedback from its output voltage to its input. The voltage spike generated, when fed back, is enough to reset it back to the high-resistance state, where input values are stored.
+After base times value $ base * value $ pulses to a memristor, it will chatge and change to the low-resistance state. It is necessary to reset the memristor when it is on this state, since anything inputted to it in this state will be lost. To avoid the need to reset the memristor everytime it switches, there is a feedback from its output voltage to its input. The voltage spike generated, when fed back, is enough to reset it back to the high-resistance state, where input values are stored.
 
-[TODO] figura que mostra a resistência versus a quantidade de pulsos
-Figure 3. Graph showing the resistance versus the amount of pulses at base 10.
+\begin{figure}
+  \caption{Graph showing the resistance versus the amount of pulses at base 10.}
+  \centerline{\includegraphics{fig/memristor-resistancexpulses.png}}
+  \legend{Source: [TODO]}
+  \label{fig:mr_rxp}
+\end{figure}
 
 The write process may consist of two types: full value loads and partial value loads. Full value loads are used to write a value in a memristor in a single cycle, by using higher pulse heigths than that base specified. This is useful to cut down load times, but if the value is bigger than the base, the excess value will be lost, with only one overflow count. Partial value loads usually are unitary pulses, which increment in one the memristor value in the current base. With this method no value is ever lost, since the memristor resets fast enough to have its overflow counted and to store the next input. This makes the write operations extremally slow for large values.
 
-[TODO] figura: mr recebendo 3 pulsos
-Figure 4. Inputting three unitary pulses into a memristor that contains no value.
+\begin{figure}
+  \caption{Inputting three unitary pulses into a memristor that contains no value.}
+  \centerline{\includegraphics{fig/memristor-basicwrite.png}}
+  \legend{Source: Author}
+  \label{fig:mr_basicwrite}
+\end{figure}
 
-[TODO] figura: resultado dos 3 pulsos no mr
-Figure 5. Result of the write.
+\begin{figure}
+  \caption{Result of the write.}
+  \centerline{\includegraphics{fig/memristor-basicwriteresult.png}}
+  \legend{Source: Author}
+  \label{fig:mr_basicwriteres}
+\end{figure}
 
 To read a memristor value, it is necessary to apply and count pulses to it until it goes into low-resistance state. The count value is the inverse of the value previously stored, considering the base. The problem with reading a value is that it actually destroys the value, since it is not possible to deduce the value only by reading its current resistance as the only voltage distinction is the difference between low-resistance and high-resistance. The read value is saved in a buffer. If that value is needed for another operation, it is necessary to re-input it after the read process.
 
-[TODO] figura: mr recebendo n pulsos
-Figure 6. Reading from the previous example. N=7 in this case.
+\begin{figure}
+  \caption{Reading from the previous example. $ N=7 $ in this case.}
+  \centerline{\includegraphics{fig/memristor-basicread.png}}
+  \legend{Source: Author}
+  \label{fig:mr_basicread}
+\end{figure}
 
 It is worth noting that the bigger a memristor base is, the longer it may take to read its value. For example, if a memristor has a stored value of 3 in base 10, it takes 7 cycles to read this value, since it is necessary to apply 7 pulses until it changes state. However, if another memristor has a stored value of 3 in base 100, it takes 97 cycles to read the same value.
 
@@ -183,22 +204,34 @@ Now that the read and write mechanisms are explained, it is possible to elaborat
 
 The plus operation is the most straight-forward of them. To do it, it is necessary to just write the first operand to a memristor and then write the second operand in to the same memristor. This memristor will contain the result of the operation. To get this value, the memristor is read and this value is inverted.
 
-[TODO] figura: operação add
-Figure 7. Example of a sum using memristors.
+\begin{figure}
+  \caption{Example of a sum using memristors.}
+  \centerline{\includegraphics{fig/basicadd.png}}
+  \legend{Source: Author}
+  \label{fig:basicadd}
+\end{figure}
 
 \section{SUB operation}
 
 To perform the minus operation, two memristors are necessary. In the first step, the first operand is written in the first memristor and the second operand is written on the second memristor. The first memristor is read and this value is written in the second memristor. The subtraction result is the value read from the second memristor.
 
-[TODO] figura: operação sub
-Figure 8. Sample operation of 7-3. M is the amount of pulses to memristor A reset and N=4 is the result.
+\begin{figure}
+  \caption{Sample operation of 7-3. M is the amount of pulses to memristor A reset and N=4 is the result.}
+  \centerline{\includegraphics{fig/basicsub.png}}
+  \legend{Source: Author}
+  \label{fig:basicsub}
+\end{figure}
 
 \section{DIV operation}
 
 Division operations can be very efficient in memristors, because they use the memristors core principle to their advantage. To do it, the base is defined as the divisor and then the dividend is written. The amount of times the memristor changed to low state indicates the quotient and the rest is represented by the inverted value saved in this memristor.
 
-[TODO] figura: operação div
-Figure 9. Dividing 10 by 3. The “3x” on the right is the amount of overflows and the 1 inside the memristor is the remainder.
+\begin{figure}
+  \caption{Dividing 10 by 3. The “3x” on the right is the amount of overflows and the 1 inside the memristor is the remainder.}
+  \centerline{\includegraphics{fig/basicdiv.png}}
+  \legend{Source: Author}
+  \label{fig:basicdiv}
+\end{figure}
 
 \section{MUL operation}
 
@@ -206,31 +239,39 @@ These operations are based on a very common principle in the binary computing th
 
 To perform that, the first operand is written in a memristor with base equal to the second operand and the amount of times the memristor overflowed are written in a second memristor of base equal to second operand as well. If this second memristor overflowed as well, these values are written to a third memristor in the same fashion as they were on the second memristor case. Upon reading, these values are read interpreting them a digit higher than they were inputted.
 
-For example, 5 * 3:
+For example, $ 5 * 3 $:
 
 \begin{itemize}
     \item Write 5 into a memristor[0] with base 3;
     \item The result is a stored value of 2 plus 1 overflows;
     \item One overflow is written in the memristor[1] of base 3;
-    \item Shifting the digit, the first memristor that could be intepreted as 3^0, is now 3^1 and the second is 3^2;
-    \item The final result is 2*3^1 + 1*3^2 = 6+9 = 15.
+    \item Shifting the digit, the first memristor that could be intepreted as $ 3^0 $, is now $ 3^1 $ and the second is $ 3^2 $;
+    \item The final result is $ 2*3^1 + 1*3^2 = 6+9 = 15 $.
 \end{itemize}
 
 If a multiplier is small and the use of multiple memristors to store this result is impractical, another technique could be used. The multiplier could define the base of an auxiliary loop-control count memristor. This memristor would be incremented and the multiplicand value would be written in the destination memristor. When the loop-control memristor overflows, the multiplicand is inputted one last time and the operation finishes. This is basically the multiply two values by the multiple additions method.
+
+\begin{figure}
+  \caption{5x3 multiplication with counting memristor. Before this operation completes, the second memristor would overflow once and end with a value of 5.}
+  \centerline{\includegraphics{fig/basicmul.png}}
+  \legend{Source: Author}
+  \label{fig:basicmul}
+\end{figure}
 
 \chapter{Architecture and implementation}
 
 All the described hardware, implementations and algorithms below were implemented using the SystemC plug-in for C++. All modules are asynchronous, which means that they don't require an external clock to function. This was deliberate to better emulate the behavior of memristor and memristor-dependent hardware, since the former is analog and asynchronous.
 
-[TODO] figura: multiplicação escrota
-Figure 10. 5x3 multiplication with counting memristor. Before this operation completes, the second memristor would overflow once and end with a value of 5.
-
 It is also worth noting that all inputs and outputs are implemented as digital signals. That applies even to real world analog values, the memristor input voltage and memristor output resistance. It is supposed to emulate these properties, and not to actually be one of them. That would require the use of more complex libraries to the implementation of analog devices and such task adds a lot of complexity to this work.
 
 Also, all components, except for the memristor and their input and output managers at the Memristor Memory Array are supposed to be digital. One of the main points of this document is to present a viable architecture that is a hybrid model between digital circuitry and analog memristors.
 
-[TODO] figura: arquitura geral
-Figure 12. Overall architecture.
+\begin{figure}
+  \caption{Overall architecture.}
+  \centerline{\includegraphics{fig/arch.png}}
+  \legend{Source: Author}
+  \label{fig:arch}
+\end{figure}
 
 \section{Memristor instruction dispatcher (MID)}
 
@@ -258,8 +299,12 @@ The MID will execute the operations whenever the “Perform Operation” input c
 
 When this operation finishes, the “Operation done” pin is changed after the result and overflow values are assigned to their respective output pins.These values are read directly from the outputs of the Memory Array.
 
-[TODO] figura: pinos de io do mid
-Figure 13. MID I/O pins.
+\begin{figure}
+  \caption{MID I/O pins.}
+  \centerline{\includegraphics{fig/mid.png}}
+  \legend{Source: Author}
+  \label{fig:mid}
+\end{figure}
 
 \section{Memristor memory array (MMA)}
 
@@ -271,7 +316,8 @@ Its inputs are:
     \item Perform operation: request to perform an operation;
     \item Read/Write: indicates whether the operation is a read or a write;
     \item Quantity: amount of addresses and write data to be received;
-    \item Addresses: addresses to be read or written;• Write data: data to be written; is not used the current operation is read;
+    \item Addresses: addresses to be read or written;
+    \item Write data: data to be written; is not used the current operation is read;
     \item Base: base of the operation;
     \item Reset: resets the state.
 \end{itemize}
@@ -292,8 +338,12 @@ It the operation is a read, it will apply pulses to all the memristor in the add
 
 All the buffers in the MMA are meant to be pure-digital buffers. In the case of the input buffer, when a value is read, it's pulse value interpreted and then sent to the respective memristor.
 
-[TODO] figura: io do mma
-Figure 14. MMA I/O pins.
+\begin{figure}
+  \caption{MMA I/O pins.}
+  \centerline{\includegraphics{fig/mma.png}}
+  \legend{Source: Author}
+  \label{fig:mma}
+\end{figure}
 
 \section{Memristor}
 
@@ -301,8 +351,13 @@ Gets instantiated in the MMA module. It is a very simple accumulator module, whi
 
 If this accumulated value surpasses the maximum threshold, the module automatically resets this value, to emulate the feedback behavior. This is done just in time that the low-resistance pulse gets sent to the output and is detectable by the MMA.
 
-[TODO] fdigura: mr io
-Figure 15. Memristor I/O pins.
+\begin{figure}
+  \caption{Memristor I/O pins.}
+  \centerline{\includegraphics{fig/mrarch.png}}
+  \legend{Source: Author}
+  \label{fig:mrarch}
+\end{figure}
+
 
 \chapter{Multi-base operations}
 
@@ -322,13 +377,11 @@ Since the normal plus process only takes one memristor for every two operands an
 
 An example of multi-base sum is the operation below. Note that the number inside parenthesis are number computed in individual memristors.
 
-153b10 + 78b10 = (1+0)*10^2 + (5+7)*10 + (3+8)
+$ 153b10 + 78b10 = (1+0)*10^2 + (5+7)*10 + (3+8) $
 
-= 1*10^2 + (2 + 1 overflow)*10 + (1 + 1 overflow)
+$ = 1*10^2 + (2 + 1 overflow)*10 + (1 + 1 overflow) $
 
-= 1*10^2 + (2 + 10)*10 + (1 + 10) = 231
-
-[TODO] formatação
+$ = 1*10^2 + (2 + 10)*10 + (1 + 10) = 231 $
 
 \section{Multi-base minus}
 
@@ -340,13 +393,11 @@ Like the multi-base plus, the minus operation does not need additional memristor
 
 Below there is an example of multi-base subtraction.
 
-137b10 - 65b10 = (1-0)*10^2 + (3-6)*10 + (7-5)
+$ 137b10 - 65b10 = (1-0)*10^2 + (3-6)*10 + (7-5) $
 
-= 1*10^2 + (7 + 1 overflow)*10 + 2
+$ = 1*10^2 + (7 + 1 overflow)*10 + 2 $
 
-= 1*10^2 + (7 - 10)*10 + 2 = 72
-
-[TODO] formatação
+$ = 1*10^2 + (7 - 10)*10 + 2 = 72 $
 
 \chapter{Results}
 
